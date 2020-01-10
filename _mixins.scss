@@ -1,0 +1,159 @@
+//CSSハックコピペ用
+//IE11
+//_:-ms-fullscreen, :root .selector {
+//  property: value;
+//}
+
+//IE～Edge
+//_:-ms-lang(x), selector {
+//  property: value;
+//}
+//Edge～
+//@supports (-ms-ime-align: auto) {
+//  .selector {
+//    property: value;
+//  }
+//}
+
+//fontawesome呼び出し
+@mixin fontawesome () {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+}
+
+//font-size をレスポンシブに調整する
+//https://coliss.com/articles/build-websites/operation/css/font-size-used-responsive-scales.html#205
+//使用例
+//.hogehoge {
+//    @include fluid-type(font-size, 320px, 1366px, 14px, 18px);
+//}
+@mixin fluid-type($properties, $min-vw, $max-vw, $min-value, $max-value) {
+	//@each $property in $properties {
+	//    #{$property}: $min-value;
+	//}
+
+	@media (min-width: $min-vw) and (max-width:$max-vw) {
+		@each $property in $properties {
+			#{$property}: calc(#{$min-value} + #{strip-unit($max-value - $min-value)} * (100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)});
+		}
+	}
+
+
+	//@media (min-width: $max-vw) {
+	//    @each $property in $properties {
+	//        #{$property}: $max-value;
+	//    }
+	//}
+}
+
+@function strip-unit($number) {
+	@if type-of($number)=="number"and not unitless($number) {
+		@return $number / ($number * 0 + 1);
+	}
+
+	@return $number;
+}
+
+//テキストにトラッキングかかってたとき用トラッキングの値を（）内に入れる
+//@include tracking(-200);
+@mixin tracking($tracking) {
+	letter-spacing: ($tracking / 1000 ) + em;
+}
+
+//fontsize100%のサイトでremを直感的に指定。
+@mixin fz($size, $base: 16) {
+	font-size: $size / $base + rem;
+}
+
+//画像ファイルの末尾に依ってブレークポイントで画像を切替える
+@mixin imgSwitch($break:$bk-md) {
+	img[src$='_sp.jpg'],
+	img[src*='_sp.jpg?'],
+	img[src$='_sp.svg'],
+	img[src*='_sp.svg?'],
+	img[src$='_sp.png'],
+	img[src*='_sp.png?'] {
+		display: block;
+		@media screen and (min-width: $break) {
+			display: none;
+		}
+	}
+	img[src$='_pc.jpg'],
+	img[src*='_pc.jpg?'],
+	img[src$='_pc.svg'],
+	img[src*='_pc.svg?'],
+	img[src$='_pc.png'],
+	img[src*='_pc.png?'] {
+		display: none;
+		@media screen and (min-width: $break) {
+			display: block;
+		}
+	}
+}
+
+
+//textshadow
+@mixin textShadow($blur:4px, $pos:4px, $shadowcolor:#fff) {
+	text-shadow:
+		$pos 0px $blur $shadowcolor,
+		-1*$pos 0px $blur $shadowcolor,
+		0px $pos $blur $shadowcolor,
+		0px -1*$pos $blur $shadowcolor;
+}
+
+/*flexレイアウト設定*/
+@mixin flexItemSet($marginWidth:0px, $marginBottom:0px, $flexSplit:4){
+	@if $flexSplit == 4 {
+		.flex-item.col#{$flexSplit} {
+			width:calc((100% - #{$marginWidth})/2);
+			&:nth-last-child(n + 3) {
+				margin-bottom: $marginBottom; //margin-bottom: $marginWidth;
+			}
+			@media screen and(min-width:$bk-md) {
+				width:calc((100% - #{$marginWidth}*3)/#{$flexSplit});
+				&:nth-last-child(n + 3) {
+					margin-bottom: 0px;
+				}
+			}
+		} //.flex-item.--col4
+	} @else if $flexSplit == 3 {
+		.flex-item.col#{$flexSplit} {
+			//width:calc((100% - #{$marginWidth})/2);
+			width: 100%;
+			&:nth-last-child(n + 2) {
+				margin-bottom: $marginBottom; //margin-bottom: $marginWidth;
+			}
+			@media screen and(min-width:$bk-md) {
+				width:calc((100% - #{$marginWidth}*2)/#{$flexSplit});
+				&:nth-last-child(n + #{$flexSplit}) {
+					margin-bottom: 0px;
+				}
+				&:nth-last-child(n + 5) {
+					margin-bottom: $marginBottom;
+					margin-bottom: $marginWidth;
+				}
+			}
+		} //.flex-item.--col3
+	} @else {
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
