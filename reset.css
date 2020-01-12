@@ -117,18 +117,6 @@ q::before {
   outline: none;
 }
 
-[hidden] {
-  display: none !important;
-}
-
-[disabled] {
-  cursor: not-allowed;
-}
-
-:focus:not(:focus-visible) {
-  outline: none;
-}
-
 /* フォーム */
 input,
 button,
@@ -150,8 +138,6 @@ select {
   vertical-align: middle;
 }
 
-/* Remove all animations and transitions for people that prefer not to see them */
-/* 見たくない人用に、すべてのアニメーションとトランジションを削除 */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
