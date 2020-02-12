@@ -183,80 +183,111 @@
 	margin-left: calc(50% - 50vw);
 }
 
+//吹き出し
+@mixin baloon($baloonInnerColor:#ccc, //吹き出し内側色
+$baloonBorderColor:#333, //吹き出し枠線色
+$baloonSize:1em, //吹き出し大きさ決めるやつ 単位 em px vw
+$baloonPos:5%, //吹き出し位置だすやつ 単位自由
+$baloonBorderWidth:1px, //吹き出し枠線 px推奨 単位必須
+$baloonRatio:.5, //吹き出しの縦横比率を調整する数値 1で正方形
+$baloonDirection:right //吹き出しの方向
+) {
+	position: relative;
+	border: $baloonBorderWidth solid $baloonBorderColor;
+	background: $baloonInnerColor;
 
-//吹き出し作成中
-	$baloonInnerColor:#ccc;//吹き出し内側色
-	$baloonBorderColor:#ccc;//吹き出し枠線色
-	$baloonSize:40px;//吹き出し大きさ決めるやつ 単位自由
-	$baloonPos:25%;//吹き出し位置だすやつ 単位自由
-	$baloonBorderWidth:1px;//吹き出し枠線 px推奨
-	$baloonRatio:.4;//吹き出しの縦横比率を調整する数値
-
-@mixin baloon($baloonInnerColor:#ccc,
-$baloonBorderColor:#333,
-$baloonSize:40px,
-$baloonPos:5%,
-$baloonBorderWidth:0,
-$baloonRatio:.4) {
-		position: relative;
-		border: $baloonBorderWidth solid $baloonBorderColor;
-	  background: $baloonInnerColor;
-		//吹き出し
-
-		&::after{
-		  position: absolute;
-  		top: 0;
-  		border: solid transparent;
-  		content: '';
-  		height: 0;
-  		width: 0;
-  		right:calc(100% - #{$baloonBorderWidth});
-  		border-color: rgba($baloonInnerColor, 0);
-  		border-right-color: $baloonInnerColor;
-  		border-right-width: $baloonSize;
-      border-left-width: 0;
-
-      border-top-width: calc(#{$baloonSize}*#{$baloonRatio});
-  		border-bottom-width: calc(#{$baloonSize}*#{$baloonRatio});
-  		margin-top: $baloonPos;
-	  }
-	  
-	  @if $baloonBorderWidth == 0 {
-	    
-	  } @else {
-  	  &::before{//吹き出しボーダー
-  	    position: absolute;
-    		top: 0;
-    		border: solid transparent;
-    		content: '';
-    		height: 0;
-    		width: 0;
-    		right: 100%;
-    		border-color: rgba($baloonBorderColor, 0);
-    		border-right-color: $baloonBorderColor;
-    		border-right-width: calc(#{$baloonSize} + #{$baloonBorderWidth});
-  
-    		border-top-width: calc((#{$baloonSize}*#{$baloonRatio} + #{$baloonBorderWidth}));
-    		border-bottom-width: calc((#{$baloonSize}*#{$baloonRatio} + #{$baloonBorderWidth}));
-    		border-left-width: 0;
-    		margin-top: calc(#{$baloonPos} - #{$baloonBorderWidth});
-    	}
-	  }
-	}//baloon
-.baloon-wrap {
-	  width:80%;
-	  position:absolute;
-	  top:50%;
-	  left:50%;
-	  transform:translate(-50%,-50%);
-}
+	&::after{
+		position: absolute;
+		border: solid transparent;
+		content: '';
+		height: 0;
+		width: 0;
+		border-color: rgba($baloonInnerColor, 0);
 	
-.baloon {
-  width:100%;
-  height:300px;
-  @include baloon;
-}
+		@if $baloonDirection == left {
+			top: 0;
+			right:calc(100% - #{$baloonBorderWidth});
+			border-right-color: $baloonInnerColor;
+			border-right-width: $baloonSize;
+			border-left-width: 0;
+			border-top-width: calc(#{$baloonSize}*#{$baloonRatio});
+			border-bottom-width: calc(#{$baloonSize}*#{$baloonRatio});
+			margin-top: $baloonPos;
+		} @else if $baloonDirection == right {
+			top: 0;
+			left:calc(100% - #{$baloonBorderWidth});
+			border-left-color: $baloonInnerColor;
+			border-left-width: $baloonSize;
+			border-right-width: 0;
+			border-top-width: calc(#{$baloonSize}*#{$baloonRatio});
+			border-bottom-width: calc(#{$baloonSize}*#{$baloonRatio});
+			margin-top: $baloonPos;
+		} @else if $baloonDirection == top {
+			bottom:calc(100% - #{$baloonBorderWidth});
+			border-bottom-color: $baloonInnerColor;
+			border-bottom-width: $baloonSize;
+			border-top-width: 0;
+			border-right-width: calc(#{$baloonSize}*#{$baloonRatio});
+			border-left-width: calc(#{$baloonSize}*#{$baloonRatio});
+			margin-left: $baloonPos;
+		} @else if $baloonDirection == bottom {
+			top:calc(100% - #{$baloonBorderWidth});
+			border-top-color: $baloonInnerColor;
+			border-top-width: $baloonSize;
+			border-bottom-width: 0;
+			border-right-width: calc(#{$baloonSize}*#{$baloonRatio});
+			border-left-width: calc(#{$baloonSize}*#{$baloonRatio});
+			margin-left: $baloonPos;
+		}
+	}
 
+	@if $baloonBorderWidth > 0px {
+		&::before{//吹き出しボーダー
+			position: absolute;
+			border: solid transparent;
+			content: '';
+			height: 0;
+			width: 0;
+			border-color: rgba($baloonBorderColor, 0);
+		
+			@if $baloonDirection == left {
+				top: 0;
+				right: 100%;
+				border-right-color: $baloonBorderColor;
+				border-right-width: calc(#{$baloonSize} + #{$baloonBorderWidth});
+				border-top-width: calc((#{$baloonSize}*#{$baloonRatio} + #{$baloonBorderWidth}));
+				border-bottom-width: calc((#{$baloonSize}*#{$baloonRatio} + #{$baloonBorderWidth}));
+				border-left-width: 0;
+				margin-top: calc(#{$baloonPos} - #{$baloonBorderWidth});
+			} @else if $baloonDirection == right {
+				top: 0;
+				left: 100%;
+				border-left-color: $baloonBorderColor;
+				border-left-width: calc(#{$baloonSize} + #{$baloonBorderWidth});
+				border-top-width: calc((#{$baloonSize}*#{$baloonRatio} + #{$baloonBorderWidth}));
+				border-bottom-width: calc((#{$baloonSize}*#{$baloonRatio} + #{$baloonBorderWidth}));
+				border-right-width: 0;
+				margin-top: calc(#{$baloonPos} - #{$baloonBorderWidth});
+			} @else if $baloonDirection == top {
+				bottom: 100%;
+				border-bottom-color: $baloonBorderColor;
+				border-bottom-width: calc(#{$baloonSize} + #{$baloonBorderWidth});
+				border-left-width: calc((#{$baloonSize}*#{$baloonRatio} + #{$baloonBorderWidth}));
+				border-right-width: calc((#{$baloonSize}*#{$baloonRatio} + #{$baloonBorderWidth}));
+				border-top-width: 0;
+				margin-left: calc(#{$baloonPos} - #{$baloonBorderWidth});
+			} @else if $baloonDirection == bottom {
+				top: 100%;
+				border-top-color: $baloonBorderColor;
+				border-top-width: calc(#{$baloonSize} + #{$baloonBorderWidth});
+				border-left-width: calc((#{$baloonSize}*#{$baloonRatio} + #{$baloonBorderWidth}));
+				border-right-width: calc((#{$baloonSize}*#{$baloonRatio} + #{$baloonBorderWidth}));
+				border-bottom-width: 0;
+				margin-left: calc(#{$baloonPos} - #{$baloonBorderWidth});
+			}
+		}
+	}
+}//baloon
 
 
 
